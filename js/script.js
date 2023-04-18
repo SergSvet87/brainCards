@@ -11,27 +11,28 @@ const initApp = async () => {
 
   const categoryObj = createCategory(app);
 
-  const categories = await fetchCategories();
-  if (categories.error) {
-    const errorText = createElement("p", {
-      className: "server-error",
-      textContent: "Ошибка сервера, попробуйте зайти позже!",
-    });
+  const returnIndex = async (e) => {
+    e?.preventDefault();
 
-    app.append(errorText);
-  }
+    const categories = await fetchCategories();
+    if (categories.error) {
+      const errorText = createElement("p", {
+        className: "server-error",
+        textContent: "Ошибка сервера, попробуйте зайти позже!",
+      });
 
-  categoryObj.mount(categories);
+      app.append(errorText);
+    }
 
-  const returnIndex = (e) => {
-    e.preventDefault();
-
-    headerObj.updateHeaderTitle("Категории");
+    categoryObj.mount(categories);
   };
+
+  returnIndex();
 
   headerObj.headerLogoLink.addEventListener("click", returnIndex);
 
   headerObj.headerButton.addEventListener("click", () => {
+    categoryObj.unmount();
     headerObj.updateHeaderTitle("Новая категория");
   });
 };
