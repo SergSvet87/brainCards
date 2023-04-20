@@ -33,7 +33,7 @@ export const createPairs = (app) => {
   container.append(btnReturn, btnCard);
   pairs.append(container);
 
-  const cardController = () => {
+  const cardController = (data) => {
     let index = 0;
 
     front.textContent = data[index][0];

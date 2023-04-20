@@ -49,12 +49,10 @@ const initApp = async () => {
     editCategoryObj.mount();
   });
 
-  categoryObj.categoryList.addEventListener("click", async (e) => {
-    const target = e.target;
-
+  categoryObj.categoryList.addEventListener("click", async ({target}) => {
     const categoryItem = target.closest(".category__item");
 
-    if (target.closest(".category__item")) {
+    if (target.closest(".category__edit")) {
       const dataCards = await fetchCards(categoryItem.dataset.id);
 
       allSectionUnmount();
