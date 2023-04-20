@@ -1,5 +1,5 @@
 import { createElement } from "../helper/createElement.js";
-import { declOfNum } from "../helper/declOfNum.js";
+import { showAlert } from './showAlert.js';
 
 export const createPairs = (app) => {
   const pairs = createElement("section", {
@@ -10,68 +10,76 @@ export const createPairs = (app) => {
     className: "container card__container",
   });
 
-  pairs.append(container);
-
-  const categoryList = createElement("ul", {
-    className: "category__list",
+  const btnReturn = createElement("button", {
+    className: "card__return",
+    ariaLabel: "Возврат к категориям",
   });
 
-  container.append(categoryList);
+  const btnCard = createElement("button", {
+    className: "card__item",
+  });
 
-  const createCategoryCard = (data) => {
-    const item = createElement("li", {
-      className: "category__item",
-    });
+  const front = createElement("span", {
+    className: "card__front",
+    textContent: "улыбка",
+  });
 
-    const createButtonCard = (className, attr) => {
-      const button = createElement("button", {
-        className: className,
-      });
+  const back = createElement("span", {
+    className: "card__back",
+    textContent: "smile",
+  });
 
-      return Object.assign(button, attr);
+  btnCard.append(front, back);
+  container.append(btnReturn, btnCard);
+  pairs.append(container);
+
+  const cardController = () => {
+    let index = 0;
+
+    front.textContent = data[index][0];
+    back.textContent = data[index][1];
+
+    const flipCard = () => {
+      btnCard.classList.add("card__item_flipped");
+      btnCard.removeEventListener("click", flipCard);
+
+      setTimeout(() => {
+        btnCard.classList.remove("card__item_flipped");
+
+        setTimeout(() => {
+          index++;
+
+          if (index === data.length) {
+            front.textContent = "The End!";
+            showAlert('Возвращаемся к категориям! Все карточки были просмотрены!', 2000)
+
+            setTimeout(() => {
+              btnReturn.click()
+            }, 2000);
+            return;
+          }
+
+          front.textContent = data[index][0];
+          back.textContent = data[index][1];
+
+          setTimeout(() => {
+            btnCard.addEventListener("click", flipCard);
+          }, 200);
+        }, 100);
+      }, 1000);
     };
 
-    item.dataset.id = data.id;
-
-    const btnTitle = createButtonCard("category__card");
-    btnTitle.append(
-      createElement("span", {
-        className: "category__title",
-        textContent: data.title,
-      })
-    );
-    btnTitle.append(
-      createElement("span", {
-        className: "category__pairs",
-        textContent: declOfNum(data.length, ["пара", "пары", "пар"]),
-      })
-    );
-
-    const btnEdit = createButtonCard("category__btn category__edit", {
-      ariaLabel: "редактировать",
-    });
-
-    const btnDel = createButtonCard("category__btn category__del", {
-      ariaLabel: "удалить",
-    });
-
-    item.append(btnTitle, btnEdit, btnDel);
-
-    return item;
+    btnCard.addEventListener("click", flipCard);
   };
 
   const mount = (data) => {
-    categoryList.textContent = "";
-    app.append(category);
-
-    const cards = data.map(createCategoryCard);
-
-    categoryList.append(...cards);
+    app.append(pairs);
+    cardController(data.pairs);
   };
 
   const unmount = () => {
-    category.remove();
+    pairs.remove();
   };
 
-  return { mount, unmount, categoryList };
+  return { btnReturn, mount, unmount };
 };
