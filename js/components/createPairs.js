@@ -1,16 +1,16 @@
 import { createElement } from "../helper/createElement.js";
 import { declOfNum } from "../helper/declOfNum.js";
 
-export const createCategory = (app) => {
-  const category = createElement("section", {
-    className: "category section-offset",
+export const createPairs = (app) => {
+  const pairs = createElement("section", {
+    className: "card section-offset",
   });
 
   const container = createElement("div", {
-    className: "container",
+    className: "container card__container",
   });
 
-  category.append(container);
+  pairs.append(container);
 
   const categoryList = createElement("ul", {
     className: "category__list",
